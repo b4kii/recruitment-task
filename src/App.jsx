@@ -5,6 +5,7 @@ import ErrorPage from "./pages/ErrorPage";
 import Home from "./pages/Home";
 import MapResult from "./pages/MapResult";
 import { mapResultLoaderData } from "./pages/MapResult";
+import NotFound from "./pages/NotFound";
 
 // const API_KEY = xubEW4OMIUsraTtYqak5OoFXNL-dqPNgnk6mUf_1YEU; // xd
 
@@ -16,25 +17,29 @@ const router = createHashRouter([
     children: [
       {
         index: true,
-        element: <Home />
+        element: <Home />,
       },
       {
         path: "/map-result",
         element: <MapResult />,
-        loader: mapResultLoaderData
+        loader: mapResultLoaderData,
+      },
+      {
+        path: "*",
+        element: <NotFound />
       }
-    ]
-  }
+    ],
+  },
 ]);
 
 function Layout() {
   return (
     <div className="h-screen bg-slate-400 grid place-content-center">
-    <Outlet />
+      <Outlet />
     </div>
   );
 }
 
 export default function App() {
-  return <RouterProvider router={router} />
+  return <RouterProvider router={router} />;
 }

@@ -4,7 +4,7 @@ import "leaflet-routing-machine/dist/leaflet-routing-machine.css";
 import "leaflet-routing-machine"
 import { useMap } from "react-leaflet";
 
-export default function Routing({from, to}) {
+export default function Routing({from, to, setDistance}) {
   const map = useMap();
 
   const [lat1, lng1] = from;
@@ -19,6 +19,7 @@ export default function Routing({from, to}) {
       routeWhileDragging: true
     })
     .on("routesfound", (e) => {
+      setDistance(Math.ceil(e.routes[0].summary.totalDistance / 1000));
       // console.log(e.routes[0].summary.totalDistance)
       // console.log(e.routes);
     })

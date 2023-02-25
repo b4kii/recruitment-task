@@ -1,21 +1,51 @@
-import React, { useEffect } from "react";
-import { MapContainer, TileLayer, Marker } from "react-leaflet";
+import React, { useEffect, useState } from "react";
+import { MapContainer, TileLayer } from "react-leaflet";
 import { useNavigate, useLoaderData } from "react-router-dom";
 import axios from "axios";
 
 import Routing from "../components/Routing";
+import ErrorMessage from "../components/ErrorMessage";
 
 export default function MapResult() {
   const data = useLoaderData();
-  const [fromData, toData, error] = data;
+  const [fromData, toData, errorData] = data;
   const navigate = useNavigate();
-  console.log(fromData, toData);
+
+  const [costPerKm, setCostPerKm] = useState(0);
+  const [distance, setDistance] = useState(0);
+  const [days, setDays] = useState(0);
+  const [totalCost, setTotalCost] = useState(0);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
-    if (error || fromData === undefined || toData === undefined) {
-      navigate("/");
+    if (errorData || fromData === undefined || toData === undefined) {
+      setError(true);
+      const timer = setTimeout(() => {
+        navigate("/");
+      }, 5000);
+      return () => clearTimeout(timer);
     }
   }, []);
+
+  useEffect(() => {
+    const totalDays = distance / 800;
+    setDays(totalDays);
+  }, [distance]);
+
+  useEffect(() => {
+    const cost = distance * costPerKm * 1.1 * days;
+    setTotalCost(Math.round(cost, 1));
+  }, [distance, costPerKm, days]);
+
+  useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => {
+        setError(false);
+      }, 1800);
+
+      return () => clearTimeout(timer);
+    }
+  }, [error]);
 
   const coordiantesFrom = [fromData?.position.lat, fromData?.position.lng];
   const coordiantesTo = [toData?.position.lat, toData?.position.lng];
@@ -31,8 +61,39 @@ export default function MapResult() {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
         />
-        <Routing from={coordiantesFrom} to={coordiantesTo} />
+        <Routing
+          from={coordiantesFrom}
+          to={coordiantesTo}
+          setDistance={setDistance}
+        />
       </MapContainer>
+      <div className="mt-4 flex flex-col gap-4">
+        <label htmlFor="rate">
+          <span className="mr-4 font-bold">Cost per km</span>
+          <input
+            type="text"
+            id="rate"
+            className="w-10 outline-none text-center"
+            value={costPerKm}
+            onChange={(event) => {
+              setCostPerKm(event.target.value);
+            }}
+          />
+        </label>
+        <p>
+          <span className="font-bold">Total distance </span>
+          {distance} km
+        </p>
+        <p>
+          <span className="font-bold">Total cost </span>
+          {totalCost}
+        </p>
+        <p>
+          <span className="font-bold">Days </span>
+          {days}
+        </p>
+      </div>
+      {error && <ErrorMessage error={error} message="No data found! Redirecting..." />}
     </>
   );
 }
