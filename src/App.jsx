@@ -1,8 +1,10 @@
 import React from "react";
 import { createHashRouter, RouterProvider, Outlet } from "react-router-dom";
+import ErrorPage from "./pages/ErrorPage";
 
 import Home from "./pages/Home";
 import MapResult from "./pages/MapResult";
+import { mapResultLoaderData } from "./pages/MapResult";
 
 // const API_KEY = xubEW4OMIUsraTtYqak5OoFXNL-dqPNgnk6mUf_1YEU; // xd
 
@@ -10,6 +12,7 @@ const router = createHashRouter([
   {
     path: "/",
     element: <Layout />,
+    errorElement: <ErrorPage />,
     children: [
       {
         index: true,
@@ -17,7 +20,8 @@ const router = createHashRouter([
       },
       {
         path: "/map-result",
-        element: <MapResult />
+        element: <MapResult />,
+        loader: mapResultLoaderData
       }
     ]
   }
@@ -25,7 +29,9 @@ const router = createHashRouter([
 
 function Layout() {
   return (
+    <div className="h-screen bg-slate-400 grid place-content-center">
     <Outlet />
+    </div>
   );
 }
 
