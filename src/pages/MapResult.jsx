@@ -28,13 +28,13 @@ export default function MapResult() {
   }, []);
 
   useEffect(() => {
-    const totalDays = distance / 800;
-    setDays(totalDays);
+    const totalDays = 2000 / 800;
+    setDays(Math.round(totalDays));
   }, [distance]);
 
   useEffect(() => {
     const cost = distance * costPerKm * 1.1 * days;
-    setTotalCost(Math.round(cost, 1));
+    setTotalCost(cost.toFixed(2));
   }, [distance, costPerKm, days]);
 
   useEffect(() => {
@@ -85,12 +85,12 @@ export default function MapResult() {
           {distance} km
         </p>
         <p>
-          <span className="font-bold">Total cost </span>
-          {totalCost}
-        </p>
-        <p>
           <span className="font-bold">Days </span>
           {days}
+        </p>
+        <p>
+          <span className="font-bold">Total cost </span>
+          {totalCost}
         </p>
       </div>
       {error && <ErrorMessage error={error} message="No data found! Redirecting..." />}

@@ -9,7 +9,7 @@ export default function InputText({
   error,
 }) {
   return (
-    <div className={`flex justify-evenly border-b-4 ${error ? "border-red-600" : "border-gray-300"} relative gap-4`}>
+    <div className={`flex justify-between border-b-4 ${error ? "border-red-600" : "border-gray-300"} relative gap-4`}>
       <label htmlFor={id} className="font-bold">
         {children}
       </label>
@@ -20,7 +20,7 @@ export default function InputText({
         onChange={(event) => {
           handleInputChange(event.target.value);
         }}
-        className="focus:outline-0 placeholder:text-center w-96"
+        className="focus:outline-0 placeholder:text-center w-[30rem] text-center"
       />
     </div>
   );
